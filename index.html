@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Bus Stop</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #08111f;
+    color: white;
+}
+
+header {
+    text-align: center;
+    padding: 25px 15px;
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+header p {
+    margin-top: 8px;
+}
+
+.container {
+    max-width: 950px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: #142238;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+.status {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px;
+    background: #0d1829;
+    border-radius: 12px;
+}
+
+.bus {
+    border: 2px solid #2e4059;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+.bus h2 {
+    margin-top: 0;
+}
+
+.active {
+    border-color: #00e676;
+    background: #102d27;
+}
+
+.info {
+    color: #b8c7d9;
+    line-height: 1.8;
+}
+
+button {
+    border: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.trigger {
+    background: #00c853;
+    color: #071b10;
+}
+
+.reset {
+    background: #ff5252;
+    color: white;
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #34445a;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+th {
+    background: #1c3555;
+}
+
+.history {
+    overflow-x: auto;
+}
+
+footer {
+    text-align: center;
+    color: #9db0c7;
+    padding: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚍 SMART BUS STOP</h1>
+    <p>Automatic Bus Sequence & Time Tracking</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>📡 Bus System Status</h2>
+        <div class="status" id="nextBus">
+            NEXT BUS: BALAJI NAGAR
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🚌 Bus Information</h2>
+
+        <div class="bus" id="balaji">
+            <h2>🚌 BALAJI NAGAR</h2>
+            <div class="info">
+                <p>Last Trigger: <span id="balajiTime">--</span></p>
+                <p>Time Gap: <span id="balajiGap">--</span></p>
+                <p>Trigger Count: <span id="balajiCount">0</span></p>
+            </div>
+        </div>
+
+        <div class="bus" id="katraj">
+            <h2>🚌 KATRAJ</h2>
+            <div class="info">
+                <p>Last Trigger: <span id="katrajTime">--</span></p>
+                <p>Time Gap: <span id="katrajGap">--</span></p>
+                <p>Trigger Count: <span id="katrajCount">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📊 Bus Trigger History</h2>
+
+        <div class="history">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Bus</th>
+                        <th>Time</th>
+                        <th>Time Gap</th>
+                    </tr>
+                </thead>
+
+                <tbody id="history"></tbody>
+            </table>
+        </div>
+
+        <div class="buttons">
+            <button class="trigger" onclick="triggerBus()">
+                ▶ NEXT BUS
+            </button>
+
+            <button class="reset" onclick="resetSystem()">
+                ↻ RESET
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    Smart Bus Stop Project | Arduino | Ultrasonic Sensor
+</footer>
+
+<script>
+
+let next = 0;
+let total = 0;
+let lastTrigger = null;
+
+let balajiCount = 0;
+let katrajCount = 0;
+
+let historyData = [];
+
+function triggerBus() {
+
+    let now = new Date();
+
+    let time = now.toLocaleTimeString();
+
+    let gap = "--";
+
+    if(lastTrigger !== null) {
+        gap = Math.round((now - lastTrigger) / 1000) + " sec";
+    } else {
+        gap = "Start";
+    }
+
+    lastTrigger = now;
+
+    total++;
+
+    let busName;
+
+    if(next === 0) {
+
+        busName = "BALAJI NAGAR";
+
+        balajiCount++;
+
+        document.getElementById("balajiTime").textContent = time;
+
+        document.getElementById("balajiGap").textContent = gap;
+
+        document.getElementById("balajiCount").textContent = balajiCount;
+
+        document.getElementById("balaji").classList.add("active");
+
+        document.getElementById("katraj").classList.remove("active");
+
+        next = 1;
+
+    } else {
+
+        busName = "KATRAJ";
+
+        katrajCount++;
+
+        document.getElementById("katrajTime").textContent = time;
+
+        document.getElementById("katrajGap").textContent = gap;
+
+        document.getElementById("katrajCount").textContent = katrajCount;
+
+        document.getElementById("katraj").classList.add("active");
+
+        document.getElementById("balaji").classList.remove("active");
+
+        next = 0;
+    }
+
+    document.getElementById("nextBus").textContent =
+        "NEXT BUS: " + (next === 0 ? "BALAJI NAGAR" : "KATRAJ");
+
+    historyData.unshift({
+        number: total,
+        bus: busName,
+        time: time,
+        gap: gap
+    });
+
+    showHistory();
+}
+
+function showHistory() {
+
+    let table = document.getElementById("history");
+
+    table.innerHTML = "";
+
+    historyData.forEach(item => {
+
+        let row = document.createElement("tr");
+
+        [item.number, item.bus, item.time, item.gap].forEach(value => {
+            let cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        table.appendChild(row);
+
+    });
+}
+
+function resetSystem() {
+
+    next = 0;
+    total = 0;
+    lastTrigger = null;
+
+    balajiCount = 0;
+    katrajCount = 0;
+
+    historyData = [];
+
+    document.getElementById("balajiTime").textContent = "--";
+    document.getElementById("balajiGap").textContent = "--";
+    document.getElementById("balajiCount").textContent = "0";
+
+    document.getElementById("katrajTime").textContent = "--";
+    document.getElementById("katrajGap").textContent = "--";
+    document.getElementById("katrajCount").textContent = "0";
+
+    document.getElementById("nextBus").textContent =
+        "NEXT BUS: BALAJI NAGAR";
+
+    document.getElementById("balaji").classList.remove("active");
+    document.getElementById("katraj").classList.remove("active");
+
+    document.getElementById("history").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>
