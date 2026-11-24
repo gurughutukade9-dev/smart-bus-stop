@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Smart Bus Stop System</title>
 
 <style>
@@ -14,287 +13,401 @@
 body {
   margin: 0;
   padding: 15px;
-  background: #08111f;
-  color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
+  background: #101827;
+  color: white;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
 }
 
 h1 {
+  text-align: center;
   color: #38bdf8;
-  font-size: 27px;
 }
 
 .card {
-  background: #142238;
-  max-width: 600px;
-  margin: 15px auto;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px #0005;
+  background: #1e293b;
+  padding: 18px;
+  border-radius: 14px;
+  margin: 14px 0;
+  box-shadow: 0 4px 12px #0005;
 }
 
-.bus {
-  color: #4ade80;
-  font-size: 30px;
+.label {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.value {
+  font-size: 25px;
   font-weight: bold;
+  margin-top: 8px;
 }
 
-.online {
+.green {
   color: #4ade80;
-  font-weight: bold;
-  font-size: 20px;
 }
 
-.clock {
+.blue {
   color: #38bdf8;
-  font-size: 27px;
-  font-weight: bold;
 }
 
-.timer {
-  color: #facc15;
-  font-size: 32px;
-  font-weight: bold;
+.orange {
+  color: #fb923c;
 }
 
-.info {
-  font-size: 18px;
-  line-height: 1.8;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 button {
+  width: 100%;
+  padding: 14px;
   border: none;
   border-radius: 10px;
-  padding: 14px 22px;
-  margin: 8px;
   font-size: 17px;
   font-weight: bold;
+  margin-top: 10px;
   cursor: pointer;
 }
 
 .next {
-  background: #22c55e;
-  color: black;
-}
-
-.reset {
-  background: #ef4444;
+  background: #16a34a;
   color: white;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+.reset {
+  background: #dc2626;
+  color: white;
 }
 
-td, th {
-  border: 1px solid #334155;
-  padding: 10px;
+.test {
+  background: #2563eb;
+  color: white;
 }
 
-.status {
-  color: #4ade80;
+li {
+  background: #334155;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  list-style: none;
 }
 
-.small {
+ul {
+  padding: 0;
+}
+
+.footer {
+  text-align: center;
   color: #94a3b8;
+  margin: 25px 0;
 }
 </style>
 </head>
 
 <body>
 
+<div class="container">
+
 <h1>🚌 SMART BUS STOP</h1>
 
 <div class="card">
-<h3>LIVE SYSTEM STATUS</h3>
-<div class="online" id="status">CONNECTING...</div>
-<p class="clock" id="clock">--:--:--</p>
-<p id="date"></p>
+  <div class="label">सध्याची वेळ</div>
+  <div class="value blue" id="clock">--:--:--</div>
 </div>
 
 <div class="card">
-<h3>NEXT BUS</h3>
-<div class="bus" id="nextBus">Loading...</div>
-<p id="busNumber">--</p>
+  <div class="label">Firebase Status</div>
+  <div class="value orange" id="status">CONNECTING...</div>
 </div>
 
 <div class="card">
-<h3>LAST ARRIVED BUS</h3>
-<div class="bus" id="lastBus">--</div>
-<div class="info">
-<p>Bus Number: <span id="lastNumber">--</span></p>
-<p>Arrival Time: <span id="arrival">--</span></p>
-</div>
+  <div class="label">आलेली बस</div>
+  <div class="value green" id="currentBus">अद्याप बस आलेली नाही</div>
+  <div id="currentNumber">--</div>
 </div>
 
-<div class="card">
-<h3>⏱️ NEXT BUS COUNTDOWN</h3>
-<div class="timer" id="timer">15:00</div>
-<p class="small">15 Minute Timer</p>
-</div>
+<div class="grid">
 
-<div class="card">
-<h3>BUS ROUTE</h3>
-<p id="previous">Previous Bus: --</p>
-<p id="current">Current Bus: --</p>
-<p id="following">Next Bus: --</p>
+  <div class="card">
+    <div class="label">बस आल्याची वेळ</div>
+    <div class="value" id="arrivalTime">--</div>
+  </div>
+
+  <div class="card">
+    <div class="label">एकूण बस काउंट</div>
+    <div class="value blue" id="totalCount">0</div>
+  </div>
+
 </div>
 
 <div class="card">
-<h3>TOTAL BUS COUNT</h3>
-<div class="bus" id="count">0</div>
+  <div class="label">15 मिनिटांचा काउंटडाउन</div>
+  <div class="value orange" id="timer">15:00</div>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="label">मागील बस</div>
+    <div class="value" id="previousBus">--</div>
+  </div>
+
+  <div class="card">
+    <div class="label">पुढील बस</div>
+    <div class="value green" id="nextBus">BALAJI NAGAR</div>
+  </div>
+
 </div>
 
 <div class="card">
-<h3>📋 BUS HISTORY</h3>
-<div style="overflow-x:auto">
-<table>
-<thead>
-<tr>
-<th>Bus</th>
-<th>Number</th>
-<th>Time</th>
-</tr>
-</thead>
-<tbody id="history"></tbody>
-</table>
-</div>
+  <h3>🚌 बस हिस्ट्री</h3>
+  <ul id="history">
+    <li>अद्याप कोणतीही बस आलेली नाही.</li>
+  </ul>
 </div>
 
-<button class="next" onclick="triggerBus()">
-NEXT BUS (TEST)
-</button>
+<button class="next" onclick="nextBus()">NEXT BUS</button>
+<button class="test" onclick="nextBus()">TEST</button>
+<button class="reset" onclick="resetData()">RESET</button>
 
-<button class="reset" onclick="resetData()">
-RESET
-</button>
+<div class="footer">
+  Smart Bus Stop Project
+</div>
 
-<p class="small">SMART BUS STOP IoT PROJECT</p>
+</div>
 
 <script>
 
-const DB =
-"https://smart-bus-stop-project-default-rtdb.firebaseio.com";
+// FIREBASE DATABASE URL
+const DB = "https://smart-bus-stop-project-2-default-rtdb.firebaseio.com";
 
+// BUS LIST
 const buses = [
-  {name:"BALAJI NAGAR", number:"BUS 01"},
-  {name:"KATRAJ", number:"BUS 02"},
-  {name:"SWARGATE", number:"BUS 03"}
+  { name: "BALAJI NAGAR", number: "BUS 01" },
+  { name: "KATRAJ", number: "BUS 02" },
+  { name: "SWARGATE", number: "BUS 03" }
 ];
 
 let data = {
-  nextIndex:0,
-  count:0,
-  lastTime:null,
-  history:[]
+  count: 0,
+  nextIndex: 0,
+  lastTime: null,
+  history: []
 };
 
-let busy = false;
+// CURRENT CLOCK
+function updateClock() {
+  document.getElementById("clock").innerText =
+    new Date().toLocaleTimeString("en-IN");
+}
 
+setInterval(updateClock, 1000);
+updateClock();
+
+// FIREBASE READ
 async function loadData() {
   try {
-
     const response = await fetch(DB + "/busData.json");
 
-    if (!response.ok) throw new Error("Firebase Error");
+    if (!response.ok) {
+      throw new Error("Firebase connection failed");
+    }
 
-    const d = await response.json();
+    const result = await response.json();
 
-    if (d) {
+    if (result) {
       data = {
-        ...data,
-        ...d,
-        history: Array.isArray(d.history) ? d.history : []
+        count: Number(result.count) || 0,
+        nextIndex: Number(result.nextIndex) || 0,
+        lastTime: result.lastTime || null,
+        history: Array.isArray(result.history)
+          ? result.history
+          : []
       };
     }
 
     document.getElementById("status").innerText =
-      "🟢 ONLINE";
+      "ONLINE";
+
+    document.getElementById("status").className =
+      "value green";
 
     render();
 
-  } catch(e) {
+  } catch (error) {
 
     document.getElementById("status").innerText =
-      "🔴 OFFLINE";
+      "OFFLINE";
 
-    console.error(e);
+    document.getElementById("status").className =
+      "value orange";
   }
 }
 
+// NEXT BUS
+async function nextBus() {
+
+  try {
+
+    await loadData();
+
+    const index = data.nextIndex % buses.length;
+    const bus = buses[index];
+
+    const now = Date.now();
+
+    const newHistory = [
+      {
+        bus: bus.name,
+        number: bus.number,
+        time: new Date(now).toLocaleTimeString("en-IN"),
+        timestamp: now
+      },
+      ...data.history
+    ].slice(0, 20);
+
+    const newData = {
+      count: data.count + 1,
+      nextIndex: (index + 1) % buses.length,
+      lastTime: now,
+      history: newHistory
+    };
+
+    const response = await fetch(DB + "/busData.json", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newData)
+    });
+
+    if (!response.ok) {
+      throw new Error("Firebase write failed");
+    }
+
+    data = newData;
+    render();
+
+  } catch (error) {
+    alert("Firebase मध्ये डेटा सेव्ह झाला नाही. कनेक्शन तपासा.");
+  }
+}
+
+// RESET
+async function resetData() {
+
+  if (!confirm("सर्व बस डेटा RESET करायचा आहे का?")) {
+    return;
+  }
+
+  const emptyData = {
+    count: 0,
+    nextIndex: 0,
+    lastTime: null,
+    history: []
+  };
+
+  try {
+
+    const response = await fetch(DB + "/busData.json", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(emptyData)
+    });
+
+    if (!response.ok) {
+      throw new Error("Reset failed");
+    }
+
+    data = emptyData;
+    render();
+
+  } catch (error) {
+    alert("RESET झाले नाही. Firebase तपासा.");
+  }
+}
+
+// DISPLAY DATA
 function render() {
 
-  const index =
-    Number(data.nextIndex || 0) % buses.length;
+  document.getElementById("totalCount").innerText =
+    data.count;
 
-  const currentIndex =
-    (index + buses.length - 1) % buses.length;
+  const current = data.history[0];
+  const previous = data.history[1];
 
-  const current = buses[currentIndex];
+  if (current) {
+
+    document.getElementById("currentBus").innerText =
+      current.bus;
+
+    document.getElementById("currentNumber").innerText =
+      current.number;
+
+    document.getElementById("arrivalTime").innerText =
+      current.time;
+
+  } else {
+
+    document.getElementById("currentBus").innerText =
+      "अद्याप बस आलेली नाही";
+
+    document.getElementById("currentNumber").innerText =
+      "--";
+
+    document.getElementById("arrivalTime").innerText =
+      "--";
+  }
+
+  document.getElementById("previousBus").innerText =
+    previous ? previous.bus : "--";
+
+  const next = buses[data.nextIndex % buses.length];
 
   document.getElementById("nextBus").innerText =
-    buses[index].name;
+    next.name;
 
-  document.getElementById("busNumber").innerText =
-    buses[index].number;
+  const historyElement =
+    document.getElementById("history");
 
-  document.getElementById("count").innerText =
-    data.count || 0;
+  historyElement.innerHTML = "";
 
-  document.getElementById("lastBus").innerText =
-    currentIndex === (index + 2) % 3 &&
-    !data.history.length ? "--" :
-    data.history.length ? data.history[0].bus : "--";
+  if (data.history.length === 0) {
 
-  document.getElementById("lastNumber").innerText =
-    data.history.length ? data.history[0].number : "--";
+    historyElement.innerHTML =
+      "<li>अद्याप कोणतीही बस आलेली नाही.</li>";
 
-  document.getElementById("arrival").innerText =
-    data.history.length ? data.history[0].time : "--";
+  } else {
 
-  document.getElementById("previous").innerText =
-    "Previous Bus: " +
-    buses[(currentIndex + 2) % 3].name;
+    data.history.forEach((item, index) => {
 
-  document.getElementById("current").innerText =
-    "Current Bus: " + current.name;
+      const li = document.createElement("li");
 
-  document.getElementById("following").innerText =
-    "Next Bus: " +
-    buses[(currentIndex + 1) % 3].name;
+      li.textContent =
+        (index + 1) + ". " +
+        item.bus + " - " +
+        item.number + " | " +
+        item.time;
 
-  let rows = "";
+      historyElement.appendChild(li);
 
-  data.history.slice(0,30).forEach(item => {
+    });
 
-    rows += `
-    <tr>
-      <td>${item.bus}</td>
-      <td>${item.number || "--"}</td>
-      <td>${item.time}</td>
-    </tr>`;
-
-  });
-
-  document.getElementById("history").innerHTML =
-    rows;
+  }
 
   updateTimer();
 }
 
-function updateClock() {
-
-  const now = new Date();
-
-  document.getElementById("clock").innerText =
-    now.toLocaleTimeString("en-IN");
-
-  document.getElementById("date").innerText =
-    now.toLocaleDateString("en-IN");
-}
-
+// 15 MINUTE TIMER
 function updateTimer() {
 
   const timer = document.getElementById("timer");
@@ -304,126 +417,27 @@ function updateTimer() {
     return;
   }
 
-  const end = Number(data.lastTime) + 15 * 60 * 1000;
+  const remaining =
+    Math.max(0, 15 * 60 * 1000 -
+    (Date.now() - data.lastTime));
 
-  const remaining = Math.max(0, end - Date.now());
+  const minutes =
+    Math.floor(remaining / 60000);
 
-  const minutes = Math.floor(remaining / 60000);
-
-  const seconds = Math.floor((remaining % 60000) / 1000);
+  const seconds =
+    Math.floor((remaining % 60000) / 1000);
 
   timer.innerText =
-    String(minutes).padStart(2,"0") + ":" +
-    String(seconds).padStart(2,"0");
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(seconds).padStart(2, "0");
 }
 
-async function triggerBus() {
+setInterval(updateTimer, 1000);
 
-  if (busy) return;
-
-  busy = true;
-
-  try {
-
-    const response = await fetch(DB + "/busData.json");
-
-    if (!response.ok) throw new Error("Read failed");
-
-    const d = await response.json();
-
-    const index = Number(d?.nextIndex || 0) % buses.length;
-
-    const now = Date.now();
-
-    const bus = buses[index];
-
-    const record = {
-      bus: bus.name,
-      number: bus.number,
-      time: new Date(now).toLocaleString("en-IN"),
-      timestamp: now
-    };
-
-    const history = Array.isArray(d?.history)
-      ? d.history : [];
-
-    history.unshift(record);
-
-    const newData = {
-      nextIndex: (index + 1) % buses.length,
-      count: Number(d?.count || 0) + 1,
-      lastTime: now,
-      history: history.slice(0,100)
-    };
-
-    const save = await fetch(DB + "/busData.json", {
-      method:"PUT",
-      headers: {
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify(newData)
-    });
-
-    if (!save.ok) throw new Error("Save failed");
-
-    data = newData;
-
-    render();
-
-  } catch(e) {
-
-    alert("Firebase Error: " + e.message);
-
-  } finally {
-
-    busy = false;
-
-  }
-}
-
-async function resetData() {
-
-  if (!confirm("Reset all bus data?")) return;
-
-  const reset = {
-    nextIndex:0,
-    count:0,
-    lastTime:null,
-    history:[]
-  };
-
-  try {
-
-    const response = await fetch(DB + "/busData.json", {
-      method:"PUT",
-      headers: {
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(reset)
-    });
-
-    if (!response.ok) throw new Error("Reset failed");
-
-    data = reset;
-
-    render();
-
-  } catch(e) {
-
-    alert("Reset Error: " + e.message);
-
-  }
-}
-
-updateClock();
-
-setInterval(updateClock,1000);
-
-setInterval(updateTimer,1000);
-
+// AUTOMATIC DATA REFRESH
 loadData();
-
-setInterval(loadData,3000);
+setInterval(loadData, 5000);
 
 </script>
 
