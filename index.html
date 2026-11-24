@@ -28,10 +28,6 @@ header h1 {
     font-size: 28px;
 }
 
-header p {
-    margin-top: 8px;
-}
-
 .container {
     max-width: 950px;
     margin: auto;
@@ -43,12 +39,11 @@ header p {
     padding: 20px;
     border-radius: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
 }
 
 .status {
     text-align: center;
-    font-size: 24px;
+    font-size: 23px;
     font-weight: bold;
     padding: 20px;
     background: #0d1829;
@@ -57,7 +52,7 @@ header p {
 
 .bus {
     border: 2px solid #2e4059;
-    padding: 20px;
+    padding: 18px;
     border-radius: 12px;
     margin-top: 15px;
 }
@@ -78,7 +73,7 @@ header p {
 
 button {
     border: none;
-    padding: 15px 20px;
+    padding: 14px 18px;
     border-radius: 10px;
     font-size: 16px;
     font-weight: bold;
@@ -109,7 +104,7 @@ table {
 
 th, td {
     border: 1px solid #34445a;
-    padding: 12px 8px;
+    padding: 10px 6px;
     text-align: center;
 }
 
@@ -139,200 +134,6 @@ footer {
 <div class="container">
 
     <div class="card">
-        <h2>📡 Bus System Status</h2>
+        <h2>📡 System Status</h2>
         <div class="status" id="nextBus">
-            NEXT BUS: BALAJI NAGAR
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>🚌 Bus Information</h2>
-
-        <div class="bus" id="balaji">
-            <h2>🚌 BALAJI NAGAR</h2>
-            <div class="info">
-                <p>Last Trigger: <span id="balajiTime">--</span></p>
-                <p>Time Gap: <span id="balajiGap">--</span></p>
-                <p>Trigger Count: <span id="balajiCount">0</span></p>
-            </div>
-        </div>
-
-        <div class="bus" id="katraj">
-            <h2>🚌 KATRAJ</h2>
-            <div class="info">
-                <p>Last Trigger: <span id="katrajTime">--</span></p>
-                <p>Time Gap: <span id="katrajGap">--</span></p>
-                <p>Trigger Count: <span id="katrajCount">0</span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>📊 Bus Trigger History</h2>
-
-        <div class="history">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Bus</th>
-                        <th>Time</th>
-                        <th>Time Gap</th>
-                    </tr>
-                </thead>
-
-                <tbody id="history"></tbody>
-            </table>
-        </div>
-
-        <div class="buttons">
-            <button class="trigger" onclick="triggerBus()">
-                ▶ NEXT BUS
-            </button>
-
-            <button class="reset" onclick="resetSystem()">
-                ↻ RESET
-            </button>
-        </div>
-    </div>
-
-</div>
-
-<footer>
-    Smart Bus Stop Project | Arduino | Ultrasonic Sensor
-</footer>
-
-<script>
-
-let next = 0;
-let total = 0;
-let lastTrigger = null;
-
-let balajiCount = 0;
-let katrajCount = 0;
-
-let historyData = [];
-
-function triggerBus() {
-
-    let now = new Date();
-
-    let time = now.toLocaleTimeString();
-
-    let gap = "--";
-
-    if(lastTrigger !== null) {
-        gap = Math.round((now - lastTrigger) / 1000) + " sec";
-    } else {
-        gap = "Start";
-    }
-
-    lastTrigger = now;
-
-    total++;
-
-    let busName;
-
-    if(next === 0) {
-
-        busName = "BALAJI NAGAR";
-
-        balajiCount++;
-
-        document.getElementById("balajiTime").textContent = time;
-
-        document.getElementById("balajiGap").textContent = gap;
-
-        document.getElementById("balajiCount").textContent = balajiCount;
-
-        document.getElementById("balaji").classList.add("active");
-
-        document.getElementById("katraj").classList.remove("active");
-
-        next = 1;
-
-    } else {
-
-        busName = "KATRAJ";
-
-        katrajCount++;
-
-        document.getElementById("katrajTime").textContent = time;
-
-        document.getElementById("katrajGap").textContent = gap;
-
-        document.getElementById("katrajCount").textContent = katrajCount;
-
-        document.getElementById("katraj").classList.add("active");
-
-        document.getElementById("balaji").classList.remove("active");
-
-        next = 0;
-    }
-
-    document.getElementById("nextBus").textContent =
-        "NEXT BUS: " + (next === 0 ? "BALAJI NAGAR" : "KATRAJ");
-
-    historyData.unshift({
-        number: total,
-        bus: busName,
-        time: time,
-        gap: gap
-    });
-
-    showHistory();
-}
-
-function showHistory() {
-
-    let table = document.getElementById("history");
-
-    table.innerHTML = "";
-
-    historyData.forEach(item => {
-
-        let row = document.createElement("tr");
-
-        [item.number, item.bus, item.time, item.gap].forEach(value => {
-            let cell = document.createElement("td");
-            cell.textContent = value;
-            row.appendChild(cell);
-        });
-
-        table.appendChild(row);
-
-    });
-}
-
-function resetSystem() {
-
-    next = 0;
-    total = 0;
-    lastTrigger = null;
-
-    balajiCount = 0;
-    katrajCount = 0;
-
-    historyData = [];
-
-    document.getElementById("balajiTime").textContent = "--";
-    document.getElementById("balajiGap").textContent = "--";
-    document.getElementById("balajiCount").textContent = "0";
-
-    document.getElementById("katrajTime").textContent = "--";
-    document.getElementById("katrajGap").textContent = "--";
-    document.getElementById("katrajCount").textContent = "0";
-
-    document.getElementById("nextBus").textContent =
-        "NEXT BUS: BALAJI NAGAR";
-
-    document.getElementById("balaji").classList.remove("active");
-    document.getElementById("katraj").classList.remove("active");
-
-    document.getElementById("history").innerHTML = "";
-}
-
-</script>
-
-</body>
-</html>
+            NEXT BUS: BALAJI
