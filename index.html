@@ -136,4 +136,179 @@ footer {
     <div class="card">
         <h2>📡 System Status</h2>
         <div class="status" id="nextBus">
-            NEXT BUS: BALAJI
+            NEXT BUS: BALAJI NAGAR
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🚌 Bus Information</h2>
+
+        <div class="bus" id="bus0">
+            <h2>🚌 BALAJI NAGAR</h2>
+            <div class="info">
+                <p>Last Trigger: <span id="time0">--</span></p>
+                <p>Time Gap: <span id="gap0">--</span></p>
+                <p>Trigger Count: <span id="count0">0</span></p>
+            </div>
+        </div>
+
+        <div class="bus" id="bus1">
+            <h2>🚌 KATRAJ</h2>
+            <div class="info">
+                <p>Last Trigger: <span id="time1">--</span></p>
+                <p>Time Gap: <span id="gap1">--</span></p>
+                <p>Trigger Count: <span id="count1">0</span></p>
+            </div>
+        </div>
+
+        <div class="bus" id="bus2">
+            <h2>🚌 SHIVAJINAGAR</h2>
+            <div class="info">
+                <p>Last Trigger: <span id="time2">--</span></p>
+                <p>Time Gap: <span id="gap2">--</span></p>
+                <p>Trigger Count: <span id="count2">0</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h2>📊 Trigger History</h2>
+
+        <div class="history">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Bus</th>
+                        <th>Time</th>
+                        <th>Time Gap</th>
+                    </tr>
+                </thead>
+                <tbody id="history"></tbody>
+            </table>
+        </div>
+
+        <div class="buttons">
+            <button class="trigger" onclick="triggerBus()">
+                ▶ NEXT BUS
+            </button>
+
+            <button class="reset" onclick="resetSystem()">
+                ↻ RESET
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    Smart Bus Stop Project
+</footer>
+
+<script>
+
+const buses = [
+    "BALAJI NAGAR",
+    "KATRAJ",
+    "SHIVAJINAGAR"
+];
+
+let next = 0;
+let total = 0;
+let lastTrigger = null;
+
+let counts = [0,0,0];
+let historyData = [];
+
+function triggerBus() {
+
+    const now = new Date();
+    const time = now.toLocaleTimeString();
+
+    let gap = "Start";
+
+    if(lastTrigger !== null) {
+        gap = Math.round((now - lastTrigger)/1000) + " sec";
+    }
+
+    lastTrigger = now;
+
+    const busName = buses[next];
+
+    counts[next]++;
+    total++;
+
+    document.getElementById("time"+next).textContent = time;
+    document.getElementById("gap"+next).textContent = gap;
+    document.getElementById("count"+next).textContent = counts[next];
+
+    document.querySelectorAll(".bus").forEach(el => {
+        el.classList.remove("active");
+    });
+
+    document.getElementById("bus"+next).classList.add("active");
+
+    historyData.unshift({
+        number: total,
+        bus: busName,
+        time: time,
+        gap: gap
+    });
+
+    next = (next + 1) % buses.length;
+
+    document.getElementById("nextBus").textContent =
+        "NEXT BUS: " + buses[next];
+
+    showHistory();
+}
+
+function showHistory() {
+
+    const table = document.getElementById("history");
+    table.innerHTML = "";
+
+    historyData.forEach(item => {
+
+        const row = document.createElement("tr");
+
+        [item.number, item.bus, item.time, item.gap].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        table.appendChild(row);
+    });
+}
+
+function resetSystem() {
+
+    next = 0;
+    total = 0;
+    lastTrigger = null;
+
+    counts = [0,0,0];
+    historyData = [];
+
+    for(let i=0;i<3;i++) {
+        document.getElementById("time"+i).textContent = "--";
+        document.getElementById("gap"+i).textContent = "--";
+        document.getElementById("count"+i).textContent = "0";
+    }
+
+    document.querySelectorAll(".bus").forEach(el => {
+        el.classList.remove("active");
+    });
+
+    document.getElementById("nextBus").textContent =
+        "NEXT BUS: BALAJI NAGAR";
+
+    document.getElementById("history").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>
