@@ -1,314 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Bus Stop</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #08111f;
-    color: white;
-}
-
-header {
-    text-align: center;
-    padding: 25px 15px;
-    background: linear-gradient(135deg, #007bff, #00c6ff);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 28px;
-}
-
-.container {
-    max-width: 950px;
-    margin: auto;
-    padding: 20px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #08111f;
+  color: white;
+  text-align: center;
+  padding: 20px;
 }
 
 .card {
-    background: #142238;
-    padding: 20px;
-    border-radius: 16px;
-    margin-bottom: 20px;
+  background: #142238;
+  padding: 20px;
+  margin: 15px auto;
+  max-width: 600px;
+  border-radius: 16px;
 }
 
-.status {
-    text-align: center;
-    font-size: 23px;
-    font-weight: bold;
-    padding: 20px;
-    background: #0d1829;
-    border-radius: 12px;
-}
+h1 { color: #38bdf8; }
 
 .bus {
-    border: 2px solid #2e4059;
-    padding: 18px;
-    border-radius: 12px;
-    margin-top: 15px;
-}
-
-.bus h2 {
-    margin-top: 0;
-}
-
-.active {
-    border-color: #00e676;
-    background: #102d27;
-}
-
-.info {
-    color: #b8c7d9;
-    line-height: 1.8;
+  font-size: 30px;
+  font-weight: bold;
+  color: #4ade80;
 }
 
 button {
-    border: none;
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 5px;
+  padding: 15px;
+  margin: 8px;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.trigger {
-    background: #00c853;
-    color: #071b10;
-}
-
-.reset {
-    background: #ff5252;
-    color: white;
-}
-
-.buttons {
-    text-align: center;
-    margin-top: 20px;
-}
+.next { background: #22c55e; color: black; }
+.reset { background: #ef4444; color: white; }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-th, td {
-    border: 1px solid #34445a;
-    padding: 10px 6px;
-    text-align: center;
+td, th {
+  padding: 10px;
+  border: 1px solid #334155;
 }
 
-th {
-    background: #1c3555;
-}
-
-.history {
-    overflow-x: auto;
-}
-
-footer {
-    text-align: center;
-    color: #9db0c7;
-    padding: 20px;
-}
+.small { color: #cbd5e1; }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>🚍 SMART BUS STOP</h1>
-    <p>Automatic Bus Sequence & Time Tracking</p>
-</header>
-
-<div class="container">
-
-    <div class="card">
-        <h2>📡 System Status</h2>
-        <div class="status" id="nextBus">
-            NEXT BUS: BALAJI NAGAR
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>🚌 Bus Information</h2>
-
-        <div class="bus" id="bus0">
-            <h2>🚌 BALAJI NAGAR</h2>
-            <div class="info">
-                <p>Last Trigger: <span id="time0">--</span></p>
-                <p>Time Gap: <span id="gap0">--</span></p>
-                <p>Trigger Count: <span id="count0">0</span></p>
-            </div>
-        </div>
-
-        <div class="bus" id="bus1">
-            <h2>🚌 KATRAJ</h2>
-            <div class="info">
-                <p>Last Trigger: <span id="time1">--</span></p>
-                <p>Time Gap: <span id="gap1">--</span></p>
-                <p>Trigger Count: <span id="count1">0</span></p>
-            </div>
-        </div>
-
-        <div class="bus" id="bus2">
-            <h2>🚌 SHIVAJINAGAR</h2>
-            <div class="info">
-                <p>Last Trigger: <span id="time2">--</span></p>
-                <p>Time Gap: <span id="gap2">--</span></p>
-                <p>Trigger Count: <span id="count2">0</span></p>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="card">
-        <h2>📊 Trigger History</h2>
-
-        <div class="history">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Bus</th>
-                        <th>Time</th>
-                        <th>Time Gap</th>
-                    </tr>
-                </thead>
-                <tbody id="history"></tbody>
-            </table>
-        </div>
-
-        <div class="buttons">
-            <button class="trigger" onclick="triggerBus()">
-                ▶ NEXT BUS
-            </button>
-
-            <button class="reset" onclick="resetSystem()">
-                ↻ RESET
-            </button>
-        </div>
-    </div>
-
+<h1>🚌 SMART BUS STOP</h1>
+<div class="card">
+  <h3>NEXT BUS</h3>
+  <div class="bus" id="nextBus">Loading...</div>
 </div>
 
-<footer>
-    Smart Bus Stop Project
-</footer>
+<div class="card">
+  <h3>Last Trigger</h3>
+  <div id="lastBus">--</div>
+  <p id="lastTime">--</p>
+</div>
+
+<div class="card">
+  <h3>Time Gap</h3>
+  <div id="gap">--</div>
+</div>
+
+<div class="card">
+  <h3>Trigger Count</h3>
+  <div id="count">0</div>
+</div>
+
+<button class="next" onclick="triggerBus()">NEXT BUS</button>
+<button class="reset" onclick="resetData()">RESET</button>
+
+<div class="card">
+  <h3>📋 Trigger History</h3>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Bus</th>
+          <th>Time</th>
+          <th>Gap</th>
+        </tr>
+      </thead>
+      <tbody id="history"></tbody>
+    </table>
+  </div>
+</div>
+
+<p class="small">Smart Bus Stop System</p>
 
 <script>
 
+const DB = "https://smart-bus-stop-project-default-rtdb.firebaseio.com";
+
 const buses = [
-    "BALAJI NAGAR",
-    "KATRAJ",
-    "SHIVAJINAGAR"
+  "BALAJI NAGAR",
+  "KATRAJ",
+  "SHIVAJINAGAR"
 ];
 
-let next = 0;
-let total = 0;
-let lastTrigger = null;
+let data = {
+  nextIndex: 0,
+  count: 0,
+  lastTime: null,
+  history: []
+};
 
-let counts = [0,0,0];
-let historyData = [];
+let busy = false;
 
-function triggerBus() {
+async function loadData() {
+  try {
+    const r = await fetch(DB + "/busData.json");
+    const d = await r.json();
 
-    const now = new Date();
-    const time = now.toLocaleTimeString();
+    if (d) data = d;
 
-    let gap = "Start";
-
-    if(lastTrigger !== null) {
-        gap = Math.round((now - lastTrigger)/1000) + " sec";
-    }
-
-    lastTrigger = now;
-
-    const busName = buses[next];
-
-    counts[next]++;
-    total++;
-
-    document.getElementById("time"+next).textContent = time;
-    document.getElementById("gap"+next).textContent = gap;
-    document.getElementById("count"+next).textContent = counts[next];
-
-    document.querySelectorAll(".bus").forEach(el => {
-        el.classList.remove("active");
-    });
-
-    document.getElementById("bus"+next).classList.add("active");
-
-    historyData.unshift({
-        number: total,
-        bus: busName,
-        time: time,
-        gap: gap
-    });
-
-    next = (next + 1) % buses.length;
-
-    document.getElementById("nextBus").textContent =
-        "NEXT BUS: " + buses[next];
-
-    showHistory();
+    render();
+  } catch(e) {
+    document.getElementById("nextBus").innerText =
+      "Database Connection Error";
+  }
 }
 
-function showHistory() {
+function render()  {
+  document.getElementById("nextBus").innerText =
+    buses[data.nextIndex || 0];
 
-    const table = document.getElementById("history");
-    table.innerHTML = "";
+  document.getElementById("count").innerText =
+    data.count || 0;
 
-    historyData.forEach(item => {
+  document.getElementById("lastBus").innerText =
+    data.history && data.history.length
+    ? data.history[0].bus
+    : "--";
 
-        const row = document.createElement("tr");
+  document.getElementById("lastTime").innerText =
+    data.history && data.history.length
+    ? data.history[0].time
+    : "--";
 
-        [item.number, item.bus, item.time, item.gap].forEach(value => {
-            const cell = document.createElement("td");
-            cell.textContent = value;
-            row.appendChild(cell);
-        });
+  document.getElementById("gap").innerText =
+    data.history && data.history.length
+    ? data.history[0].gap + " seconds"
+    : "--";
 
-        table.appendChild(row);
-    });
+  let rows = "";
+
+  (data.history || []).forEach(item => {
+    rows += `<tr>
+      <td>${item.bus}</td>
+      <td>${item.time}</td>
+      <td>${item.gap} sec</td>
+    </tr>`;
+  });
+
+  document.getElementById("history").innerHTML = rows;
 }
 
-function resetSystem() {
+async function triggerBus() {
+  if (busy) return;
+  busy = true;
 
-    next = 0;
-    total = 0;
-    lastTrigger = null;
+  try {
+    await loadData();
 
-    counts = [0,0,0];
-    historyData = [];
+    const now = Date.now();
 
-    for(let i=0;i<3;i++) {
-        document.getElementById("time"+i).textContent = "--";
-        document.getElementById("gap"+i).textContent = "--";
-        document.getElementById("count"+i).textContent = "0";
-    }
+    const gap = data.lastTime
+      ? Math.round((now - data.lastTime) / 1000)
+      : 0;
 
-    document.querySelectorAll(".bus").forEach(el => {
-        el.classList.remove("active");
-    });
+    const bus = buses[data.nextIndex || 0];
 
-    document.getElementById("nextBus").textContent =
-        "NEXT BUS: BALAJI NAGAR";
+    const record = {
+      bus: bus,
+      time: new Date(now).toLocaleString("en-IN"),
+      gap: gap,
+      timestamp: now
+    };
 
-    document.getElementById("history").innerHTML = "";
+    data.history = data.history || [];
+    data.history.unshift(record);
+
+    data.count = (data.count || 0) + 1;
+    data.lastTime = now;
+
+    data.nextIndex = (data.nextIndex + 1) % buses.length;
+
+    await saveData();
+
+  } catch(e) {
+    alert("डेटा सेव्ह झाला नाही!");
+  }
+
+  busy = false;
 }
+
+async function saveData() {
+  const r = await fetch(DB + "/busData.json", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!r.ok) throw new Error("Save failed");
+
+  render();
+}
+
+async function resetData() {
+  if (!confirm("सर्व History Reset करायची आहे का?")) return;
+
+  data = {
+    nextIndex: 0,
+    count: 0,
+    lastTime: null,
+    history: []
+  };
+
+  await saveData();
+}
+
+loadData();
+
+setInterval(loadData, 3000);
 
 </script>
-
 </body>
 </html>
